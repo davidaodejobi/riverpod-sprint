@@ -1,3 +1,4 @@
+import 'package:example1/example/example1.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -11,26 +12,9 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Riverpod Example 1',
       home: Home(),
-    );
-  }
-}
-
-class Home extends ConsumerWidget {
-  const Home({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Riverpod Example 1'),
-      ),
-      body: const Center(
-        child: Text('Hello World'),
-      ),
     );
   }
 }
