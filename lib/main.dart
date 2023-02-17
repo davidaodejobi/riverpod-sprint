@@ -1,4 +1,4 @@
-import 'package:example1/example/example1.dart';
+import 'package:example1/example/example2.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -11,10 +11,13 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.dark,
       title: 'Riverpod Example 1',
-      home: Home(),
+      home: const Example2(),
     );
   }
 }
