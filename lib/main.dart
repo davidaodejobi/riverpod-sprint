@@ -1,4 +1,4 @@
-import 'package:example1/examples/example3_weather.dart';
+import 'package:example1/examples/example4_streams.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,7 +17,7 @@ class Main extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
       title: 'Riverpod Example 1',
-      home: const Example3(),
+      home: const Example4Streams(),
     );
   }
 }
