@@ -1,4 +1,4 @@
-import 'package:example1/example/example2.dart';
+import 'package:example1/examples/examples.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
