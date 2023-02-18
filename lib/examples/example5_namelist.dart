@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -37,17 +38,17 @@ class Person {
   // also checks whether the runtime types of the objects are the
   // same, and whether the names, ages, and uuids of the objects
   // are the same.
-  @override
-  bool operator ==(covariant Object other) =>
-      identical(this, other) ||
-      other is Person &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          age == other.age &&
-          uuid == other.uuid;
-
   // @override
-  // bool operator ==(covariant Object other) => uuid == other.uuid;
+  // bool operator ==(covariant Object other) =>
+  //     identical(this, other) ||
+  //     other is Person &&
+  //         runtimeType == other.runtimeType &&
+  //         name == other.name &&
+  //         age == other.age &&
+  //         uuid == other.uuid;
+
+  @override
+  bool operator ==(covariant Person other) => uuid == other.uuid;
 
   // Returns a hash code for this object.
   @override
@@ -78,11 +79,8 @@ class DataModel extends ChangeNotifier {
   }
 
   void updatePerson(Person updatedPerson) {
-    print('updatedPerson: $updatedPerson');
     final index = _people.indexOf(updatedPerson);
-    print('index: $index');
     final oldPerson = _people[index];
-    print('oldPerson: $oldPerson');
     if (oldPerson.name != updatedPerson.name ||
         oldPerson.age != updatedPerson.age) {
       _people[index] = oldPerson.update(
@@ -194,6 +192,7 @@ Future<Person?> createOrUpdatePersonDialog(
                 //       Person(name: name, age: age),
                 // );
                 if (existingPerson != null) {
+                  log('existingPerson: $existingPerson');
                   final newPerson = existingPerson.update(
                     name,
                     age,
