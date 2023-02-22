@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+// A simple data class to hold information about a city
 class City {
   final String name;
   final String timezone;
@@ -11,6 +12,7 @@ class City {
   });
 }
 
+// Create a Provider that provides a List of cities
 final citiesProvider = Provider<List<City>>(
   (ref) => [
     City(name: 'New York', timezone: 'UTC-5'),
@@ -20,11 +22,13 @@ final citiesProvider = Provider<List<City>>(
   ],
 );
 
+// A widget that uses the citiesProvider to display a list of cities
 class CitiesProvider extends ConsumerWidget {
   const CitiesProvider({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Get the list of cities from the citiesProvider
     final cities = ref.watch(citiesProvider);
 
     return MaterialApp(
