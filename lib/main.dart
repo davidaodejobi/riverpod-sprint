@@ -1,7 +1,6 @@
+import 'package:example1/practices/provider/candidate_provider_practice.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import 'practices/provider/cities_provider_practice.dart';
 
 void main() {
   runApp(const ProviderScope(child: Main()));
@@ -12,6 +11,6 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CitiesProvider();
+    return const PACriteriaProviderPractice();
   }
 }
