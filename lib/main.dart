@@ -1,4 +1,4 @@
-import 'package:example1/practices/state_provider/state_notifier_counter.dart';
+import 'package:example1/practices/state_notifier/state_notifier_counter_2.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -11,6 +11,6 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const StateProviderCounter();
+    return const StateNotifierCounter2();
   }
 }
