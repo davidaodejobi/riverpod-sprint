@@ -11,6 +11,9 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Example5NameList();
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Example6StateNotifier(),
+    );
   }
 }

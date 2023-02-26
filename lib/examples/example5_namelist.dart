@@ -102,47 +102,45 @@ class Example5NameList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Name List'),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              final newPerson = await createOrUpdatePersonDialog(context);
-              if (newPerson != null) {
-                ref.read(dataModelProvider).addPerson(newPerson);
-              }
-            },
-            child: const Icon(Icons.add),
-          ),
-          body: Consumer(
-            builder: (context, ref, child) {
-              final dataModel = ref.watch(dataModelProvider);
-              return ListView.builder(
-                itemCount: dataModel.people.length,
-                itemBuilder: (context, index) {
-                  final person = dataModel.people[index];
-                  return ListTile(
-                    title: Text(person.displayName),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () async {
-                        final newPerson = await createOrUpdatePersonDialog(
-                          context,
-                          person,
-                        );
-                        if (newPerson != null) {
-                          dataModel.updatePerson(newPerson);
-                        }
-                      },
-                    ),
-                  );
-                },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Name List'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final newPerson = await createOrUpdatePersonDialog(context);
+          if (newPerson != null) {
+            ref.read(dataModelProvider).addPerson(newPerson);
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: Consumer(
+        builder: (context, ref, child) {
+          final dataModel = ref.watch(dataModelProvider);
+          return ListView.builder(
+            itemCount: dataModel.people.length,
+            itemBuilder: (context, index) {
+              final person = dataModel.people[index];
+              return ListTile(
+                title: Text(person.displayName),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () async {
+                    final newPerson = await createOrUpdatePersonDialog(
+                      context,
+                      person,
+                    );
+                    if (newPerson != null) {
+                      dataModel.updatePerson(newPerson);
+                    }
+                  },
+                ),
               );
             },
-          )),
+          );
+        },
+      ),
     );
   }
 }

@@ -145,13 +145,6 @@ final notFavoriteFilmsProvider = Provider<Iterable<Film>>(
         (film) => !film.isFavorite,
       ),
 );
-// final notFavoriteFilmsProvider = Provider<Iterable<Film>>(
-//   (ref) => ref.watch(
-//     allFilmsProvider.select(
-//       (films) => films.where((film) => !film.isFavorite),
-//     ),
-//   ),
-// );
 
 class Example6StateNotifier extends StatelessWidget {
   const Example6StateNotifier({Key? key}) : super(key: key);
@@ -162,7 +155,28 @@ class Example6StateNotifier extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Films'),
       ),
-      body: Container(),
+      body: Column(
+        children: [
+          const FilterWidget(),
+          Consumer(builder: (context, ref, child) {
+            final filter = ref.watch(favoriteStatusProvider);
+            switch (filter) {
+              case FavoriteFilter.all:
+                return FilmsWidget(
+                  provider: allFilmsProvider,
+                );
+              case FavoriteFilter.favorite:
+                return FilmsWidget(
+                  provider: favoriteFilmsProvider,
+                );
+              case FavoriteFilter.notFavorite:
+                return FilmsWidget(
+                  provider: notFavoriteFilmsProvider,
+                );
+            }
+          })
+        ],
+      ),
     );
   }
 }
@@ -177,36 +191,30 @@ class FilmsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final films = ref.watch(provider);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Films'),
-      ),
-      body: Expanded(
-        child: ListView.builder(
-          itemCount: films.length,
-          itemBuilder: (context, index) {
-            final film = films.elementAt(index);
-            final favoriteIcon = film.isFavorite
-                ? Icons.favorite
-                : Icons.favorite_border_outlined;
-            return ListTile(
-              title: Text(film.title),
-              subtitle: Text(film.description),
-              trailing: IconButton(
-                icon: Icon(
-                  favoriteIcon,
-                ),
-                onPressed: () {
-                  final isFavorite = !film.isFavorite;
-                  ref.read(allFilmsProvider.notifier).update(
-                        film.id,
-                        isFavorite,
-                      );
-                },
+    return Expanded(
+      child: ListView.builder(
+        itemCount: films.length,
+        itemBuilder: (context, index) {
+          final film = films.elementAt(index);
+          final favoriteIcon =
+              film.isFavorite ? Icons.favorite : Icons.favorite_border_outlined;
+          return ListTile(
+            title: Text(film.title),
+            subtitle: Text(film.description),
+            trailing: IconButton(
+              icon: Icon(
+                favoriteIcon,
               ),
-            );
-          },
-        ),
+              onPressed: () {
+                final isFavorite = !film.isFavorite;
+                ref.read(allFilmsProvider.notifier).update(
+                      film.id,
+                      isFavorite,
+                    );
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -231,7 +239,9 @@ class FilterWidget extends StatelessWidget {
               );
             },
           ).toList(),
-          onChanged: (value) {},
+          onChanged: (FavoriteFilter? filter) {
+            ref.read(favoriteStatusProvider.notifier).state = filter!;
+          },
         );
       },
     );
