@@ -25,9 +25,10 @@ class Person {
   // This method returns a new Person object with the name and age fields updated.
   // If either the name or age field is null, the original value is used.
   // The original Person object is not modified.
-  Person update([String? name, int? age]) => Person(
+  Person updated([String? name, int? age]) => Person(
         name: name ?? this.name,
         age: age ?? this.age,
+        uuid: uuid,
       );
 
   // Returns the name and age of the person as a single string.
@@ -83,7 +84,7 @@ class DataModel extends ChangeNotifier {
     final oldPerson = _people[index];
     if (oldPerson.name != updatedPerson.name ||
         oldPerson.age != updatedPerson.age) {
-      _people[index] = oldPerson.update(
+      _people[index] = oldPerson.updated(
         updatedPerson.name,
         updatedPerson.age,
       );
@@ -101,45 +102,48 @@ class Example5NameList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Name List'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            final newPerson = await createOrUpdatePersonDialog(context);
-            if (newPerson != null) {
-              ref.read(dataModelProvider).addPerson(newPerson);
-            }
-          },
-          child: const Icon(Icons.add),
-        ),
-        body: Consumer(
-          builder: (context, ref, child) {
-            final dataModel = ref.watch(dataModelProvider);
-            return ListView.builder(
-              itemCount: dataModel.people.length,
-              itemBuilder: (context, index) {
-                final person = dataModel.people[index];
-                return ListTile(
-                  title: Text(person.displayName),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      final newPerson = await createOrUpdatePersonDialog(
-                        context,
-                        person,
-                      );
-                      if (newPerson != null) {
-                        dataModel.updatePerson(newPerson);
-                      }
-                    },
-                  ),
-                );
-              },
-            );
-          },
-        ));
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text('Name List'),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              final newPerson = await createOrUpdatePersonDialog(context);
+              if (newPerson != null) {
+                ref.read(dataModelProvider).addPerson(newPerson);
+              }
+            },
+            child: const Icon(Icons.add),
+          ),
+          body: Consumer(
+            builder: (context, ref, child) {
+              final dataModel = ref.watch(dataModelProvider);
+              return ListView.builder(
+                itemCount: dataModel.people.length,
+                itemBuilder: (context, index) {
+                  final person = dataModel.people[index];
+                  return ListTile(
+                    title: Text(person.displayName),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () async {
+                        final newPerson = await createOrUpdatePersonDialog(
+                          context,
+                          person,
+                        );
+                        if (newPerson != null) {
+                          dataModel.updatePerson(newPerson);
+                        }
+                      },
+                    ),
+                  );
+                },
+              );
+            },
+          )),
+    );
   }
 }
 
@@ -193,7 +197,7 @@ Future<Person?> createOrUpdatePersonDialog(
                 // );
                 if (existingPerson != null) {
                   log('existingPerson: $existingPerson');
-                  final newPerson = existingPerson.update(
+                  final newPerson = existingPerson.updated(
                     name,
                     age,
                   );

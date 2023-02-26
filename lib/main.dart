@@ -1,7 +1,6 @@
+import 'package:example1/examples/examples.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import 'practices/future_provider/meme_image_generator.dart';
 
 void main() {
   runApp(const ProviderScope(child: Main()));
@@ -12,6 +11,6 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MemeImageGenerator();
+    return const Example5NameList();
   }
 }

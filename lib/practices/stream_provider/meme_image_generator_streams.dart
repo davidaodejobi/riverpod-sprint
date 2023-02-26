@@ -1,87 +1,34 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
+import 'package:example1/practices/future_provider/meme_image_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class Response {
-  final bool success;
-  final Map<String, dynamic> data;
+final tickerProvider = StreamProvider(
+  (ref) => Stream.periodic(
+    const Duration(
+      seconds: 2,
+    ),
+    (x) => x + 1,
+  ),
+);
 
-  Response({
-    required this.success,
-    required this.data,
-  });
-
-  Response.fromJson(Map<String, dynamic> json)
-      : success = json['success'],
-        data = json['data'];
-}
-
-class Memes {
-  final List<Meme> memes;
-
-  Memes({
-    required this.memes,
-  });
-
-  Memes.fromJson(Map<String, dynamic> json)
-      : memes = (json['memes'] as List).map((e) => Meme.fromJson(e)).toList();
-}
-
-class Meme {
-  final String id;
-  final String name;
-  final String url;
-  final int width;
-  final int height;
-  final int boxCount;
-  final int captions;
-
-  Meme({
-    required this.id,
-    required this.name,
-    required this.url,
-    required this.width,
-    required this.height,
-    required this.boxCount,
-    required this.captions,
-  });
-
-  Meme.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        url = json['url'],
-        width = json['width'],
-        height = json['height'],
-        boxCount = json['box_count'],
-        captions = json['captions'];
-}
-
-Future<Response> fetchMemes() async {
-  final response = await Dio().get('https://api.imgflip.com/get_memes');
-
-  if (response.statusCode == 200) {
-    final data = Response.fromJson(response.data);
-    return data;
-  } else {
-    throw Exception('Failed to load memes');
-  }
-}
-
-final memeProvider = FutureProvider<Memes>(
-  (ref) async {
-    final response = await fetchMemes();
-    return Memes.fromJson(response.data);
+final memeStreamProvider = StreamProvider(
+  (ref) {
+    final memes = ref.watch(memeProvider);
+    List listOfMemes = memes.asData!.value.memes;
+    return ref.watch(tickerProvider.stream).map(
+          (event) => listOfMemes.getRange(0, event),
+        );
   },
 );
 
-class MemeImageGenerator extends HookConsumerWidget {
-  const MemeImageGenerator({Key? key}) : super(key: key);
+class MemeImageGeneratorStreams extends HookConsumerWidget {
+  const MemeImageGeneratorStreams({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final memes = ref.watch(memeProvider);
+    final memes = ref.watch(memeStreamProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -90,7 +37,7 @@ class MemeImageGenerator extends HookConsumerWidget {
       darkTheme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Meme Image Generator'),
+          title: const Text('Stream Meme Image Generator'),
         ),
         body: memes.when(
           data: (memes) {
@@ -106,9 +53,9 @@ class MemeImageGenerator extends HookConsumerWidget {
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
-                itemCount: memes.memes.length,
+                itemCount: memes.length,
                 itemBuilder: (context, index) {
-                  final meme = memes.memes[index];
+                  final meme = memes.elementAt(index);
                   return Stack(
                     children: [
                       CachedNetworkImage(
@@ -178,11 +125,15 @@ class MemeImageGenerator extends HookConsumerWidget {
             ),
           ),
           error: (error, stackTrace) => const Center(
-            child: Text(
-              'You don fuck up guy! 🥹👩🏾‍💻',
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 24,
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Seems we\'ve gotten to the end or we\'ve not started yet 👩🏾‍💻',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 24,
+                ),
               ),
             ),
           ),
